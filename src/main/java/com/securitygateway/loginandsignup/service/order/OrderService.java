@@ -1,4 +1,4 @@
-package com.securitygateway.loginandsignup.service.purchase;
+package com.securitygateway.loginandsignup.service.order;
 
 import com.securitygateway.loginandsignup.service.AbstractService;
 import entity.Order;
@@ -6,5 +6,5 @@ import entity.Order;
 /**
  * @author Oli-Un-Nahar Asha
  */
-public interface PurchaseService extends AbstractService<Order> {
+public interface OrderService extends AbstractService<Order> {
 }

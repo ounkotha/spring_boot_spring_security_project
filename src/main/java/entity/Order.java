@@ -26,14 +26,19 @@ public class Order extends CommonColumn{
     @Column(name = "order_code")
     private String orderCode;
 
+    @Column(name = "coupon_code")
+    private String couponCode;
+
     @Column(name = "orderDate")
     private Date orderDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
     @Column(name = "count_for_product")
     private Long countForProduct;
+
 
 
 }

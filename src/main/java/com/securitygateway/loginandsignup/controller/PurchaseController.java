@@ -2,10 +2,13 @@ package com.securitygateway.loginandsignup.controller;
 
 import com.securitygateway.loginandsignup.model.ApiResponse;
 import com.securitygateway.loginandsignup.model.ListSearchModel;
+import com.securitygateway.loginandsignup.service.ControllerAuthenticationService;
 import com.securitygateway.loginandsignup.service.product.ProductService;
-import com.securitygateway.loginandsignup.service.purchase.PurchaseService;
+import com.securitygateway.loginandsignup.service.order.OrderService;
 import entity.Order;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,14 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PurchaseController {
 
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseController.class);
+    final String controllerName = PurchaseController.class.getSimpleName();
+
     @Autowired
-    PurchaseService purchaseService;
+    OrderService purchaseService;
     @Autowired
     ProductService productService;
+    @Autowired
+    ControllerAuthenticationService controllerAuthenticationService;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Object> create(@RequestBody @Valid Order order) {
         ApiResponse response = new ApiResponse(false);
+        if (!controllerAuthenticationService.authoriseUserByUserIdAndFeatureController(controllerName)) {
+            response.setMessage("Unauthorised.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
 
         try {
             response.setData(purchaseService.create(order));
@@ -50,6 +62,10 @@ public class PurchaseController {
     @RequestMapping(value = "/productList", method = RequestMethod.POST)
     public ResponseEntity<Object> getProductList(@RequestBody ListSearchModel searchModel) {
         ApiResponse response = new ApiResponse(false);
+        if (!controllerAuthenticationService.authoriseUserByUserIdAndFeatureController(controllerName)) {
+            response.setMessage("Unauthorised.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
 
         try {
             response.setData(productService.getPaginatedProductList(PageRequest.of(searchModel.getPage() - 1, searchModel.getSize(), Sort.by(Sort.Direction.DESC, searchModel.getOrderBy()))));

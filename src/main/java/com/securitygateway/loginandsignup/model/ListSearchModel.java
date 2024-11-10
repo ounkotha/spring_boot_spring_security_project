@@ -1,8 +1,11 @@
 package com.securitygateway.loginandsignup.model;
 
+import lombok.Data;
+
 /**
  * @author Oli-Un-Nahar Asha
  */
+@Data
 public class ListSearchModel {
     private int page;
     private int size;
